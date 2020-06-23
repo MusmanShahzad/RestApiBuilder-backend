@@ -1,0 +1,37 @@
+{
+  "name": "restapibuilderbackend",
+  "version": "1.0.0",
+  "description": "backend for rest api builder",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MusmanShahzad/RestApiBuilder-backend.git"
+  },
+  "keywords": [
+    "Rest",
+    "api",
+    "builder",
+    "Backend"
+  ],
+  "author": "Muhammad Usman Shahzad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MusmanShahzad/RestApiBuilder-backend/issues"
+  },
+  "homepage": "https://github.com/MusmanShahzad/RestApiBuilder-backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "env": "0.0.2",
+    "express": "^4.17.1",
+    "express-easy-zip": "^1.1.5",
+    "fs-extra": "^9.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.19",
+    "multer": "^1.4.2",
+    "uuid": "^8.1.0"
+  }
+}
