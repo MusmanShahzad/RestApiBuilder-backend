@@ -18,7 +18,13 @@ const generateTable=(tableData,dbName)=>{
     `;
 }
 const generateColumn=(columnData)=>{
-    return `${columnData.name} ${type[columnData.type]} (${columnData.length}) ${columnData.null?'NULL':'NOT NULL'} ${columnData.default?defaults[columnData.default]:''} ${keys[columnData.key]}`;
+    let typeCheck=columnData.type;
+    
+    if(typeCheck==3||typeCheck==4||typeCheck==5||typeCheck==6){
+        console.log('here')
+        columnData.length=0;
+    }
+    return `${columnData.name} ${type[columnData.type]} ${columnData.length>0?`(${columnData.length})`:''} ${columnData.null?'NULL':'NOT NULL'} ${columnData.default?defaults[columnData.default]:''} ${keys[columnData.key]}`;
 }
 const createColumns=(columns)=>{
     let query = [];

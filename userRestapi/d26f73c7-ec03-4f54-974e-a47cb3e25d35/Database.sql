@@ -1,4 +1,0 @@
-CREATE DATABASE IF NOT EXISTS Database;
-USE Database;
- CREATE TABLE IF NOT EXISTS Database.first (test  (20) NOT NULL  ,test2  (20) NOT NULL  ) ENGINE = MyISAM;
-    
