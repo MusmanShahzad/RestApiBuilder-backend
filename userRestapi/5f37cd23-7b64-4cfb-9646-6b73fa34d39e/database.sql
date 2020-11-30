@@ -1,4 +1,0 @@
-CREATE DATABASE IF NOT EXISTS test;
-USE test;
- CREATE TABLE IF NOT EXISTS test.studentdd (test DATE  NOT NULL  ,hello VARCHAR (20) NOT NULL  ) ENGINE = MyISAM;
-    
