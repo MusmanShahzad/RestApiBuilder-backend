@@ -161,7 +161,7 @@ const startServer = async () => {
             fs.mkdirSync(`./${defaultDir}/${dir}`);
         }
         let path = `${defaultDir}/${dir}`;
-        let out = await fs.writeFileSync(`${path}/database.sql`, createQuery(data));
+       // let out = await fs.writeFileSync(`${path}/database.sql`, createQuery(data));
         fsExtra.copySync('./../restApiSekelton', path);
 
         res.json({
@@ -175,17 +175,18 @@ const startServer = async () => {
     app.get('/restApiBuilder', async (req, res) => {
         let dir = uuidv4();
         let data = req.body;
+        console.log(data);
         if (!fs.existsSync(`./${defaultDir}/test/${dir}`)) {
             fs.mkdirSync(`./${defaultDir}/test/${dir}`);
         }
-        let path = `${defaultDir}/${dir}`;
+        let path = `${defaultDir}/test/${dir}`;
         //let out = await fs.writeFileSync(`${path}/database.sql`, createQuery(data));
         fsExtra.copySync('./../restApiSekelton', path);
-
+       await generateMainFile(data,path);
         res.json({
             error: false,
             data: {
-                path
+                path:''
             }
         });
         return;
@@ -223,7 +224,7 @@ const startServer = async () => {
     app.use('/project', projectRoute);
     app.use('/router', route);
     app.listen(4000, () => {
-        console.log("🚀 Server Running on http://localhost:8080/");
+        console.log("🚀 Server Running on http://localhost:4000/");
     });
 }
 startServer();

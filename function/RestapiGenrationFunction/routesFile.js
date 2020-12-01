@@ -26,6 +26,7 @@ let routeSkeleton = `router.{{method}}('/{{route}}',{{middleware}} async (req, r
 
 const generateRoutes = (route, isChild) => {
     let out = [];
+    console.log(route)
     for (let method in route.methods) {
         let routeMiddleware = [];
         let temp = fileUpload(route.methods[method].variables);
@@ -117,7 +118,7 @@ const generateRoute = (route) => {
     ${imports.join('\n')}\n
     ${globalVariables.join('\n')}\n
     ${middleWares.join('\n')}\n
-    ${generateRoutes(route)}\n
+    ${generateRoutes(route,false)}\n
     module.exports=router;
     `
 }
