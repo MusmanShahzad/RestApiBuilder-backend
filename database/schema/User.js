@@ -28,14 +28,16 @@ const userSchema = mongoose.Schema({
     database: [{
             id: String,
             name: String,
+            routes:String,
             tables: [{
                 id: String,
                 name: String,
                 columns: [column]
             }]
-        }]
+        }],
+        
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema);

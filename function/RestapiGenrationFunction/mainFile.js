@@ -24,10 +24,8 @@ let middleWares=[
             try {
                 let output = jwt.verify(req.headers.authtoken, process.env.PRIVATE_KEY || 'secret');
                 req.payload = output.payload;
-                console.log('authenticated')
                 req.isAuth = true;
             } catch (err) {
-                console.log('not authenticated')
                 req.isAuth = false;
             }
     

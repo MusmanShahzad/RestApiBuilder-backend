@@ -14,7 +14,7 @@ const createTable=(data)=>{
     return query.join(';')
 }
 const generateTable=(tableData,dbName)=>{
-    return `CREATE TABLE IF NOT EXISTS ${dbName+"."+tableData.name} (${createColumns(tableData.columns)}) ENGINE = MyISAM;
+    return `CREATE TABLE IF NOT EXISTS \`${tableData.name}\` (${createColumns(tableData.columns)}) ENGINE = MyISAM;
     `;
 }
 const generateColumn=(columnData)=>{
@@ -23,7 +23,7 @@ const generateColumn=(columnData)=>{
     if(typeCheck==3||typeCheck==4||typeCheck==5||typeCheck==6){
         columnData.length=0;
     }
-    return `${columnData.name} ${type[columnData.type]} ${columnData.length>0?`(${columnData.length})`:''} ${columnData.null?'NULL':'NOT NULL'} ${columnData.default?defaults[columnData.default]:''} ${keys[columnData.key]}`;
+    return `\`${columnData.name}\` ${type[columnData.type]} ${columnData.length>0?`(${columnData.length})`:''} ${columnData.null?'NULL':'NOT NULL'} ${columnData.default?defaults[columnData.default]:''} ${keys[columnData.key]}`;
 }
 const createColumns=(columns)=>{
     let query = [];

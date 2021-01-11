@@ -29,6 +29,8 @@ const comboBoxRoute = require('./routes/comboBox');
 const userRoute = require('./routes/user');
 const projectRoute = require('./routes/project');
 const route = require('./routes/routesBuilder');
+const restapiRoute = require('./routes/restapi');
+
 //Middle ware
 app.use(bodyParser.urlencoded({
     extended: true
@@ -43,83 +45,7 @@ app.use('/upload', express.static('upload'))
 //Global Variables
 const defaultDir = 'userRestapi';
 //Server
-let testData={
-    "projectId": "Project linked",
-    "port": 8080,
-    "secretKey": "Token Genrating key",
-    "routes": [
-        {
-        "path": "name",
-        "auth": true,
-        "methods": {
-            "get": {
-                "auth": true,
-                "query": "SQL Query",
-                "variables": [{
-                    "name": "Name",
-                    "type": "string",
-                    "parse": "body",
-                    validator:{
-                        min:4,
-                        max:5,
-                        regex:''
-                    }
-                }]
-            },
-            "post": {
-                "auth": true,
-                "query": "SQL Query",
-                "variables": [{
-                    "name": "Name",
-                    "type": "int",
-                    "parse": "body",
-                    validator:{
-                        min:4,
-                        max:5,
-                        regex:''
-                    }
-                }]
-            },
-            
-        },
-        "children":[{
-            "path": "name",
-            "auth": true,
-            "methods": {
-                "get": {
-                    "auth": true,
-                    "query": "SQL Query",
-                    "variables": [{
-                        "name": "Name",
-                        "type": "string",
-                        "parse": "body",
-                        validator:{
-                            min:4,
-                            max:5,
-                            regex:''
-                        }
-                    }]
-                },
-                "post": {
-                    "auth": true,
-                    "query": "SQL Query",
-                    "variables": [{
-                        "name": "Name",
-                        "type": "int",
-                        "parse": "body",
-                        validator:{
-                            min:4,
-                            max:5,
-                            regex:''
-                        }
-                    }]
-                }
-            }
-        }]
-        
-    }
-]
-}
+
 //console.log(generateRoute(testData.routes[0]));
 const startServer = async () => {
     try {
@@ -161,9 +87,8 @@ const startServer = async () => {
             fs.mkdirSync(`./${defaultDir}/${dir}`);
         }
         let path = `${defaultDir}/${dir}`;
-       // let out = await fs.writeFileSync(`${path}/database.sql`, createQuery(data));
         fsExtra.copySync('./../restApiSekelton', path);
-
+       await generateMainFile(data,path);
         res.json({
             error: false,
             data: {
@@ -175,18 +100,17 @@ const startServer = async () => {
     app.get('/restApiBuilder', async (req, res) => {
         let dir = uuidv4();
         let data = req.body;
-        console.log(data);
-        if (!fs.existsSync(`./${defaultDir}/test/${dir}`)) {
-            fs.mkdirSync(`./${defaultDir}/test/${dir}`);
+        if (!fs.existsSync(`./${defaultDir}/${dir}`)) {
+            fs.mkdirSync(`./${defaultDir}/${dir}`);
         }
-        let path = `${defaultDir}/test/${dir}`;
-        //let out = await fs.writeFileSync(`${path}/database.sql`, createQuery(data));
+        let path = `${defaultDir}/${dir}`;
+       // let out = await fs.writeFileSync(`${path}/database.sql`, createQuery(data));
         fsExtra.copySync('./../restApiSekelton', path);
-       await generateMainFile(data,path);
+
         res.json({
             error: false,
             data: {
-                path:''
+                path
             }
         });
         return;
@@ -223,6 +147,7 @@ const startServer = async () => {
     app.use('/user', userRoute);
     app.use('/project', projectRoute);
     app.use('/router', route);
+    app.use('/restapi', restapiRoute);
     app.listen(4000, () => {
         console.log("🚀 Server Running on http://localhost:4000/");
     });
