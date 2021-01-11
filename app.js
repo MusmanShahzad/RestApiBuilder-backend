@@ -88,6 +88,14 @@ const startServer = async () => {
         }
         let path = `${defaultDir}/${dir}`;
         fsExtra.copySync('./../restApiSekelton', path);
+        await fs.writeFileSync(path+'/example.env', `
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=${data.databaseName}
+PORT=${data.port}
+PRIVATE_KEY=${data.secretKey}
+`);
        await generateMainFile(data,path);
         res.json({
             error: false,

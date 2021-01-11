@@ -1,7 +1,7 @@
 
 const convertor=(data)=>{
     return {
-        projectId: data.name,
+        databaseName: data.name,
         port:8080,
         secretKey: 'Token Genrating key',
         routes:Routes(data.tables)

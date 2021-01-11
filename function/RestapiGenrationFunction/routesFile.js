@@ -2,6 +2,7 @@ const validatorData = require('./validator.data');
 let middleWares = [];
 const variableSkelton = 'const {{variable}}=req.{{parse}}.{{variable}}.toString();'
 let imports = [
+    "const jwt = require('jsonwebtoken');",
     "const express = require('express');",
     "const {body,validationResult,query,param,header} = require('express-validator');",
     "const connection = require('./../helpers/connection');",
@@ -16,15 +17,32 @@ let globalVariables = [
 let routeSkeleton = `router.{{method}}('/{{route}}',{{middleware}} async (req, res) => {
         {{validator}}\n
         {{variables}}\n
-        return res.json(await connection.executeQuery(\`{{query}}\`))\n
+        \n{{response}}\n
     });`;
-let tokenRes=`jwt.sign(
-    { userId: 'Data Here' },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "15d",
+let tokenResponse=`
+let output = await connection.executeQuery(\`{{query}}\`);
+if(output.error){
+    res.json(output);
+    return;
+}
+else{
+    if(output.data.length>0){
+        res.json({...output,token:jwt.sign(
+            { data:output.data },
+            process.env.PRIVATE_KEY,
+            {
+              expiresIn: "15d",
+            }
+          )});
+          return;
     }
-  );`;
+    else{
+        res.json(output);
+        return; 
+    }
+}
+`;
+let response=`return res.json(await connection.executeQuery(\`{{query}}\`));`
 
 const generateRoutes = (route, isChild) => {
     let out = [];
@@ -38,14 +56,14 @@ const generateRoutes = (route, isChild) => {
             routeMiddleware.push(temp);
             let validate=variablesValidation(route.methods[method].variables);
             if(validate!="")routeMiddleware.push(validate);
-        if (route.methods[method].auth || route.auth) {
+        if (route.methods[method].auth===true) {
             routeMiddleware.push('authMiddleware')
         }
        let tempRoute= routeSkeleton.replace(/{{method}}/g, method)
             .replace('{{route}}', isChild ? route.path : '')
             
             .replace('{{variables}}', declareVariables(route.methods[method].variables))
-            .replace('{{query}}', route.methods[method].query);
+            .replace('{{response}}', generateResponse(route.methods[method].getToken,route.methods[method].query));
             if(validate!=""){
                 tempRoute=tempRoute.replace('{{validator}}',
                 `const errors = validationResult(req);
@@ -149,6 +167,17 @@ const generateRoute = (route) => {
     ${generateRoutes(route,false)}\n
     module.exports=router;
     `
+}
+const generateResponse=(token,query)=>{
+    if(query===''){
+        return 'res.json({error:true,message:"No query found!"});\nreturn;'
+    }
+    if(token){
+       return tokenResponse.replace(/{{query}}/g,query);
+    }
+    else{
+        return response.replace(/{{query}}/g, query);
+    }
 }
 module.exports = {
     variablesValidation,
