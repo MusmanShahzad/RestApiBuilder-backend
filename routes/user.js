@@ -1,6 +1,8 @@
 const env = require('dotenv').config();
 const jwt = require("jsonwebtoken");
 const multer = require('multer');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const storage = multer.diskStorage({ destination:(req,file,callback)=>{
 callback(null,'./upload');
 },
@@ -26,7 +28,7 @@ router.post('/', upload.single('file'),async (req, res) => {
     let user = new User({
         name: data.name,
         email: data.email,
-        password: data.password,
+        password:await bcrypt.hash(data.password, saltRounds),
         avatar: `upload/${req.file.filename}`
     });
     const token = jwt.sign(
@@ -43,29 +45,33 @@ router.post('/', upload.single('file'),async (req, res) => {
 });
 });
 router.post('/login', async (req, res)=>{
-  let user = await User.find({ email:req.body.email,password:req.body.password});
+  let user = await User.find({ email:req.body.email});
   if(user.length>0){
+    
     user = user[0];
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "15d",
-      }
-    );
-  res.send({
-      error:false,
-      user,
-      token
-});
+    if(await bcrypt.compare(req.body.password, user.password)){
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "15d",
+        }
+      );
+    res.send({
+        error:false,
+        user,
+        token
+  });
+  return;
+    }
+    
   }
-  else{
     res.send({
       error:true,
       message:'Email or password is incorrect',
       title:'not found'
     });
-  }
+    return;
 });
 router.get('/',authenticationMiddleware,async (req,res) =>{
   if(req.isAuth){

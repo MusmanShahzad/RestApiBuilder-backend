@@ -7,8 +7,10 @@
     "test": "nodemon app"
   },
   "nodemonConfig": {
-    "ignore": ["userRestapi/*"]
-},
+    "ignore": [
+      "userRestapi/*"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MusmanShahzad/RestApiBuilder-backend.git"
@@ -26,6 +28,7 @@
   },
   "homepage": "https://github.com/MusmanShahzad/RestApiBuilder-backend#readme",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "env": "0.0.2",
